@@ -1,5 +1,7 @@
 # akl_infocouncil_mastodon_bot
 
+Follow this bot at @akl_infocouncil@botsin.space https://botsin.space/@akl_infocouncil
+
 This bot will update hourly depending on if there is any new content.
 
 This code is not endorsed(at least that we know of) or in any way related to Auckland Council and at any point they could by no fault of there own break our bot.

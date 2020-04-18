@@ -305,8 +305,8 @@ if index.blank? == false
                  client.create_status(toot_html.join("\n"), {:language => "en"})
                  client.create_status(toot_pdf.join("\n"), {:language => "en"})
          			 else
-                 html_media = client.upload_media(toot_image)
-                 pdf_media = client.upload_media(toot_image)
+                 html_media = client.upload_media(toot_image, {:focus => "-1, -1"})
+                 pdf_media = client.upload_media(toot_image, {:focus => "-1, -1"})
 
                  client.create_status(toot_html.join.join("\n"), {:language => "en", :media_ids => [html_media.id]})
                  client.create_status(toot_pdf.join("\n"), {:language => "en", :media_ids => [pdf_media.id]})
