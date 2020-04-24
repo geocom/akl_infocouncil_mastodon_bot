@@ -13,7 +13,7 @@ interspace = File.read("#{Dir.pwd}/api_key.txt").split("\n")[2].to_i #looks like
 mastodon_key = File.read("#{Dir.pwd}/api_key.txt").split("\n")[0]
 
 client = Mastodon::REST::Client.new(base_url: 'https://botsin.space', bearer_token: mastodon_key)
-
+files_added = []
 if File.exist?(logfile) == false
 	File.open(logfile, 'w') { |file| file.write("Beginning New LogFile") }
 end
@@ -51,7 +51,13 @@ if index.blank? == false
 		minutes = []
 		minutes_attachments = []
 
+		agenda_files_added = []
+		agenda_attachments_files_added = []
+		minutes_files_added = []
+		minutes_attachements_files_added = []
+
 		changes_to_folder = [item[0], item[1]]
+		files_changed = []
 
 		item[2].css("a").each do |item|
 			item_filename = item['href'].split("/").last
@@ -59,7 +65,7 @@ if index.blank? == false
 			if not File.exist?("#{dated_path}/#{foldername}/#{item_filename}.item")
 				##Write the file so we know its added
 				File.open("#{dated_path}/#{foldername}/#{item_filename}.item", 'w') { |file| file.write("") }
-
+				agenda_files_added << "#{dated_path}/#{foldername}/#{item_filename}.item"
 				agenda_items << item
 			end
 		end
@@ -70,6 +76,8 @@ if index.blank? == false
 			if not File.exist?("#{dated_path}/#{foldername}/#{item_filename}.item")
 				##Write the file so we know its added
 				File.open("#{dated_path}/#{foldername}/#{item_filename}.item", 'w') { |file| file.write("") }
+
+				agenda_attachments_files_added << "#{dated_path}/#{foldername}/#{item_filename}.item"
 
 				agenda_attachments << item
 			end
@@ -82,6 +90,8 @@ if index.blank? == false
 				##Write the file so we know its added
 				File.open("#{dated_path}/#{foldername}/#{item_filename}.item", 'w') { |file| file.write("") }
 
+				minutes_files_added << "#{dated_path}/#{foldername}/#{item_filename}.item"
+
 				minutes << item
 			end
 		end
@@ -92,6 +102,8 @@ if index.blank? == false
 				##Write the file so we know its added
 				File.open("#{dated_path}/#{foldername}/#{item_filename}.item", 'w') { |file| file.write("") }
 
+				minutes_attachements_files_added << "#{dated_path}/#{foldername}/#{item_filename}.item"
+
 				minutes_attachments << item
 			end
 		end
@@ -100,12 +112,18 @@ if index.blank? == false
 		changes_to_folder << minutes
 		changes_to_folder << minutes_attachments
 
+		files_changed << agenda_files_added
+		files_changed << agenda_attachments_files_added
+		files_changed << minutes_files_added
+		files_changed << minutes_attachements_files_added
+
 		if agenda_items.count > 0 or agenda_attachments.count > 0 or minutes.count > 0 or minutes_attachments.count > 0
 			puts "#{item[0]} #{item[1]}"
 			tootable_items << changes_to_folder
+			files_added << files_changed
 		end
 	end
-	tootable_items.each do |item|
+	tootable_items.each_with_index do |item, tootable_index|
 		 formatted_toot = []
      textcount = []
 		 hashtag_types_included = []
@@ -316,12 +334,23 @@ if index.blank? == false
 					 		 open(logfile, 'a') { |f|
 					 		   f.puts e.message
                  f.puts e.backtrace
+
+								 files_added[tootable_index].each do |item|
+									 item.each do |file|
+										 `rm -f #{file}`
+									 end
+								 end
 					 		 }
 					 	 end
 					 else
 					 	 open(logfile, 'a') { |f|
 					 	   f.puts e.message
                f.puts e.backtrace
+							 files_added[tootable_index].each do |item|
+								 item.each do |file|
+									 `rm -f #{file}`
+								 end
+							 end
 					 	 }
 					 end
 				 end
@@ -329,6 +358,11 @@ if index.blank? == false
 				 open(logfile, 'a') { |f|
 				   f.puts e.message
            f.puts e.backtrace
+					 files_added[tootable_index].each do |item|
+						 item.each do |file|
+							 `rm -f #{file}`
+						 end
+					 end
 				 }
 			 end
 		 end
