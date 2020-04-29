@@ -12,7 +12,7 @@ interspace = File.read("#{Dir.pwd}/api_key.txt").split("\n")[2].to_i #looks like
 
 mastodon_key = File.read("#{Dir.pwd}/api_key.txt").split("\n")[0]
 
-client = Mastodon::REST::Client.new(base_url: 'https://botsin.space', bearer_token: mastodon_key)
+client = Mastodon::REST::Client.new(base_url: 'https://botsin.space', bearer_token: mastodon_key, timeout: {connect: 10, read:20, write: 60})
 files_added = []
 if File.exist?(logfile) == false
 	File.open(logfile, 'w') { |file| file.write("Beginning New LogFile") }
