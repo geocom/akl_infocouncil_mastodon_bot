@@ -27,8 +27,8 @@ if index.blank? == false
 	index.css('.bpsGridMenuItem', '.bpsGridMenuAltItem').each do |link|
 		sanitised_name = link.css('.bpsGridCommittee')[0].children.first.content.gsub("Addendum", "").strip()
 		address = link.css('.bpsGridCommittee span')[0].content.gsub("\r\n", " ")
-
-		meetings << [Date.parse( link.css('.bpsGridDate')[0].content.split("<br>")[0]), sanitised_name, link.css('.bpsGridAgenda')[0], link.css('.bpsGridAttachments')[0], link.css('.bpsGridMinutes')[0], link.css('.bpsGridMinutesAttachments')[0], address]
+		puts link.css('.bpsGridDate')[0].inner_html.split("<br>")[0]
+		meetings << [Date.parse( link.css('.bpsGridDate')[0].inner_html.split("<br>")[0]), sanitised_name, link.css('.bpsGridAgenda')[0], link.css('.bpsGridAttachments')[0], link.css('.bpsGridMinutes')[0], link.css('.bpsGridMinutesAttachments')[0], address]
 	end
 	#puts meetings
 	meetings.each do |item|
